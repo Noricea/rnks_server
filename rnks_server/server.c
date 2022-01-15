@@ -120,7 +120,7 @@ void main(int argc, char** argv) {
 		exit(EXIT_FAILURE);
 	}
 
-	server_socket = socket(AF_INET6, SOCK_STREAM, 0);
+	server_socket = socket(AF_INET6, SOCK_STREAM, IPPROTO_TCP);
 	if (server_socket == INVALID_SOCKET) {
 		printf("[-] Socket creation failed...\n");
 		exit(EXIT_FAILURE);
