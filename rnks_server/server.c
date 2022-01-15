@@ -93,8 +93,7 @@ void main(int argc, char** argv) {
 	SOCKET server_socket = NO_SOCKET, client_socket = NO_SOCKET;
 	fd_set read_socket, write_socket, except_socket;
 	package data;
-	//char IP_IPv6[40] = "2a02:2454:9d26:9e00:c0d1:233e:bcb9:b04e";
-	int Port_IPv6 = 9000;
+	int Port_IPv6;
 
 	if (!argv[1] || !argv[2]) {
 		printf("[-] Not enough parameter.\n");
@@ -127,6 +126,9 @@ void main(int argc, char** argv) {
 	}
 	printf("[+] Socket successfully created.\n");
 
+	int flag = 1;
+	setsockopt(server_socket, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
+
 	u_long iMode = 1;
 	if (ioctlsocket(server_socket, FIONBIO, &iMode) != NO_ERROR) {
 		printf("[-] Ioctlsocket failed.\n");
@@ -135,7 +137,8 @@ void main(int argc, char** argv) {
 	ZeroMemory(&server_addr_IPv6, sizeof(server_addr_IPv6));
 	server_addr_IPv6.sin6_family = AF_INET6;
 	server_addr_IPv6.sin6_port = htons(Port_IPv6);
-	inet_pton(AF_INET6, INADDR_ANY, server_addr_IPv6.sin6_addr.s6_addr);
+	server_addr_IPv6.sin6_addr = in6addr_any;
+	//inet_pton(AF_INET6, INADDR_ANY, server_addr_IPv6.sin6_addr.s6_addr);
 
 	if (bind(server_socket, (struct sockaddr*)&server_addr_IPv6, sizeof(server_addr_IPv6)) == SOCKET_ERROR) {
 		printf("[-] Socket bind failed.\n");
